@@ -25,12 +25,15 @@ public class AutenticacionController {
     @Autowired
     private TokenService tokenService;
 
+    public String usurioEnUso;
+
     @PostMapping
     public ResponseEntity autenticarUsuario(@RequestBody @Valid DatosAutenticacionUsuario datosAutenticacion){
         Authentication authToken = new UsernamePasswordAuthenticationToken(datosAutenticacion.login(), datosAutenticacion.clave());
         System.out.println(authToken);
         var usuarioAutenticado = authenticationManager.authenticate(authToken);
         System.out.println(usuarioAutenticado);
+        usurioEnUso = usuarioAutenticado.getName();
         var JWTtoken = tokenService.generarToken((Usuario) usuarioAutenticado.getPrincipal());
         System.out.println(JWTtoken);
         return ResponseEntity.ok(new DatosJWTToken(JWTtoken));
